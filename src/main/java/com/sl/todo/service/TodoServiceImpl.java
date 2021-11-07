@@ -6,11 +6,12 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.sl.todo.entity.Todo;
+import com.sl.todo.exception.TodoNotFoundException;
 import com.sl.todo.mapper.TodoMapper;
 import com.sl.todo.model.TodoDTO;
 import com.sl.todo.repository.TodoDao;
+import com.sl.todo.util.TodoValidator;
 
 @Service
 public class TodoServiceImpl implements TodoService {
@@ -23,7 +24,8 @@ public class TodoServiceImpl implements TodoService {
 	
 	@Override
 	public TodoDTO saveTodo(TodoDTO todo) {
-		todo.setStatus("pending");
+		TodoValidator.validateTodoDTO(todo);
+		todo.setStatus("Pending");
 		Todo todoEntitiy = todoDao.saveAndFlush(todoMapper.fromDTO(todo));
 		return todoMapper.toDTO(todoEntitiy);
 	}
@@ -36,7 +38,7 @@ public class TodoServiceImpl implements TodoService {
 			return todoMapper.toDTO(todoEntitiy.get());
 		}
 		
-		return null;
+		throw new TodoNotFoundException();
 	}
 
 	@Override
@@ -63,7 +65,8 @@ public class TodoServiceImpl implements TodoService {
 			entity.setStatus(dto.getStatus());
 			return todoMapper.toDTO(todoDao.saveAndFlush(entity));
 		}
-		return null;
+		
+		throw new TodoNotFoundException();
 	}
 
 	@Override
