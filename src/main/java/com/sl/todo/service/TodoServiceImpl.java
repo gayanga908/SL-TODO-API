@@ -70,9 +70,8 @@ public class TodoServiceImpl implements TodoService {
 	}
 
 	@Override
-	public TodoDTO deleteTodo(Long id) {
+	public void deleteTodo(Long id) {
 		todoDao.deleteById(id);
-		return null;
 	}
 	
 	
